@@ -23,3 +23,30 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('login', () => {
+    cy.visit('http://notes-serverless-app.com')
+
+    cy.get('.navbar-nav a:contains(Login)').click()
+
+    cy.get('#email').type('laraoliveira2435@gmail.com')
+    cy.get('#password').type('Lara2435@')
+    cy.get('button[type="submit"]').click()
+  });
+
+Cypress.Commands.add('createsANote', (note) => {
+    cy.contains('Create a new note').click()
+    cy.get('#content').type(note)
+    cy.contains('Create').click()
+});
+
+Cypress.Commands.add('editsANote', (note, updateNote) => {
+    cy.get('.list-group').contains(note).click()
+    cy.get('#content').type(updateNote)
+    cy.contains('Save').click()
+});
+
+Cypress.Commands.add('deletesANote', (noteUpdate) => {
+    cy.get('.list-group').contains(noteUpdate).click()
+    cy.contains('Delete').click()
+});

@@ -1,36 +1,18 @@
 describe('Notes', () => {
+  const note = 'My note';
+  const noteUpdate = 'My note updated';
   beforeEach(() => {
-    cy.visit('http://notes-serverless-app.com')
-
-    cy.get('.navbar-nav a:contains(Login)').click()
-
-    cy.get('#email').type(Cypress.env('user'))
-    cy.get('#password').type(Cypress.env('password'))
-    cy.get('button[type="submit"]').click()
+    cy.login();
   })
 
-  it('creates a note', () => {
-    cy.contains('Create a new note').click()
+  it('CRUD a note', () => {
+    cy.createsANote(note);
+    cy.get('.list-group').should('contain', note)
 
-    cy.get('#content').type('My note')
-    cy.contains('Create').click()
+    cy.editsANote(note, ' updated');
+    cy.get(`.list-group:contains(${noteUpdate})`).should('be.visible')
 
-    cy.get('.list-group').should('contain', 'My note')
-  })
-
-  it('edits a note', () => {
-    cy.get('.list-group').contains('My note').click()
-    cy.get('#content').type(' updated')
-    cy.contains('Save').click()
-
-    cy.get('.list-group').should('contain', 'My note updated')
-    cy.get('.list-group:contains(My note updated)').should('be.visible')
-  })
-
-  it('deletes a note', () => {
-    cy.get('.list-group').contains('My note updated').click()
-    cy.contains('Delete').click()
-
-    cy.get('.list-group:contains(My note updated)').should('not.exist')
+    cy.deletesANote(noteUpdate);
+    cy.get(`.list-group:contains(${noteUpdate})`).should('not.exist')
   })
 })
